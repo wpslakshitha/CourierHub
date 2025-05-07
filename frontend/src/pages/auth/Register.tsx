@@ -94,10 +94,7 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("Form data before validation:", formData);
-
     if (!validateForm()) {
-      console.log("Form validation failed");
       return;
     }
 
@@ -105,7 +102,6 @@ const Register = () => {
     setError("");
 
     try {
-      console.log("Attempting to register user...");
       const response = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
         headers: {
@@ -120,25 +116,20 @@ const Register = () => {
         }),
       });
 
-      console.log("Response status:", response.status);
       const data = await response.json();
-      console.log("Response data:", data);
 
       if (!response.ok) {
         console.error("Registration failed with error:", data.error);
         throw new Error(data.error || "Registration failed");
       }
 
-      console.log("Registration successful");
       setSuccess("Registration successful! Redirecting to dashboard...");
 
       // Log the user in
-      console.log("Logging in user...");
       login(data.data.user, data.data.token);
 
       // Redirect after a short delay
       setTimeout(() => {
-        console.log("Redirecting to dashboard...");
         navigate("/dashboard");
       }, 1500);
     } catch (err) {
@@ -147,7 +138,6 @@ const Register = () => {
         err instanceof Error ? err.message : "An unknown error occurred"
       );
     } finally {
-      console.log("Registration process completed");
       setIsLoading(false);
     }
   };

@@ -27,10 +27,6 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("Login attempt started");
-    console.log("Email:", email);
-    console.log("Password:", password);
-
     // Validate input
     if (!email || !password) {
       setError("Please fill in all fields");
@@ -46,7 +42,6 @@ const Login = () => {
     } catch (err) {
       console.error("Login error:", err);
     } finally {
-      console.log("Login process completed");
       setIsLoading(false);
     }
   };

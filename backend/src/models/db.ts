@@ -12,8 +12,6 @@ const config = {
   port: parseInt(process.env.PG_PORT || "5432"),
 };
 
-console.log("Database connection config:", config);
-
 const { Pool } = pg;
 
 const pool = new Pool({

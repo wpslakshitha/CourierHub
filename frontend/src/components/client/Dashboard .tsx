@@ -96,7 +96,6 @@ const Dashboard = () => {
 
         setShipments(data);
         setFilteredShipments(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching shipments:", error);
       } finally {

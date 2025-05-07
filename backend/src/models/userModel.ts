@@ -15,14 +15,11 @@ export interface User {
 
 // Find user by email
 export const findUserByEmail = async (email: string): Promise<User | null> => {
-  console.log("Searching for user with email:", email);
   const result = await query("SELECT * FROM users WHERE email = $1", [email]);
   if (!result.rows[0]) {
-    console.log("User not found for email:", email);
     return null;
   }
 
-  console.log("User found for email:", email);
   return {
     user_id: result.rows[0].id,
     name: result.rows[0].name,
@@ -63,7 +60,6 @@ export const findUserById = async (userId: number): Promise<User | null> => {
 export const getUserProfile = async (
   userId: number
 ): Promise<UserProfile | null> => {
-  console.log("Fetching profile for user ID:", userId);
   const queryText = `
     SELECT 
       id AS user_id,
@@ -82,10 +78,8 @@ export const getUserProfile = async (
   const result = await query(queryText, [userId]);
 
   if (!result.rows[0]) {
-    console.log("Profile not found for user ID:", userId);
     return null;
   }
 
-  console.log("Profile found for user ID:", userId);
   return result.rows[0];
 };

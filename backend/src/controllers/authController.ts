@@ -75,11 +75,8 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    console.log("Login request received for email:", email);
-
     // Validate required fields
     if (!email || !password) {
-      console.log("Validation failed: Missing email or password");
       return res.status(400).json({
         success: false,
         error: "Please provide email and password",
@@ -89,7 +86,6 @@ export const login = async (req: Request, res: Response) => {
     // Check if user exists
     const user = await userModel.findUserByEmail(email);
     if (!user) {
-      console.log("User not found for email:", email);
       return res.status(401).json({
         success: false,
         error: "Invalid credentials",
@@ -99,7 +95,6 @@ export const login = async (req: Request, res: Response) => {
     // Compare passwords
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      console.log("Invalid password for email:", email);
       return res.status(401).json({
         success: false,
         error: "Invalid credentials",

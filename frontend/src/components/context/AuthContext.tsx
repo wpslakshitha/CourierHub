@@ -32,7 +32,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   });
 
   const login = async (email: string, password: string) => {
-    console.log("Attempting login with email:", email);
     try {
       const response = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
@@ -50,7 +49,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       localStorage.setItem("user", JSON.stringify(data.data.user));
       localStorage.setItem("token", data.data.token);
       setUser(data.data.user);
-      console.log("Login successful for user:", data.data.user.email);
     } catch (error) {
       console.error("Login error:", error);
       throw error;
@@ -58,7 +56,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const logout = () => {
-    console.log("Logging out user:", user?.email);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     setUser(null);

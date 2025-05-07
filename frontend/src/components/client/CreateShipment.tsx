@@ -136,8 +136,6 @@ const CreateShipment = () => {
   // Fetch user profile data
   useEffect(() => {
     const fetchUserProfile = async () => {
-      console.log("Fetching user profile", user);
-
       if (!user?.email) return;
 
       try {

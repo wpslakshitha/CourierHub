@@ -259,12 +259,8 @@ const AdminDashboard = () => {
           .length,
       };
       setStats(newStats);
-
-      // Show success message (you can use a toast notification here)
-      console.log("Status updated successfully");
     } catch (error) {
       console.error("Error updating status:", error);
-      // Show error message (you can use a toast notification here)
     } finally {
       setUpdatingStatus(false);
     }
