@@ -1026,7 +1026,7 @@ const LandingPage = () => {
               viewport={{ once: true }}
             >
               <img
-                src="/assets/world-map.svg"
+                src="/src/assets/world-map.png"
                 alt="Global Delivery Network"
                 className="w-full h-auto rounded-xl shadow-lg"
               />
