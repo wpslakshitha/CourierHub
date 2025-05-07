@@ -1,0 +1,22 @@
+export const errorLogger = (err, req, res, next) => {
+    console.error(`Error: ${err.message}`);
+    console.error(`Stack: ${err.stack}`);
+    next(err);
+};
+export const errorResponder = (err, req, res, next) => {
+    res.header("Content-Type", "application/json");
+    res.status(500).json({
+        success: false,
+        message: "Server error occurred",
+        error: process.env.NODE_ENV === "development"
+            ? err.message
+            : "Internal server error",
+    });
+};
+export const invalidPathHandler = (req, res) => {
+    res.status(404).json({
+        success: false,
+        message: "Invalid path",
+        error: "The requested resource does not exist",
+    });
+};

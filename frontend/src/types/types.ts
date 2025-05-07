@@ -1,0 +1,38 @@
+export interface Shipment {
+  id?: number;
+  tracking_number: string;
+  user_id: number;
+  sender_name: string;
+  sender_email: string;
+  sender_phone?: string;
+  sender_address: string;
+  sender_city: string;
+  sender_state: string;
+  sender_zip: string;
+  sender_country: string;
+  recipient_name: string;
+  recipient_email: string;
+  recipient_phone?: string;
+  recipient_address: string;
+  recipient_city: string;
+  recipient_state: string;
+  recipient_zip: string;
+  recipient_country: string;
+  package_type: string;
+  weight: number;
+  length?: number;
+  width?: number;
+  height?: number;
+  description?: string;
+  declared_value?: number;
+  delivery_notes?: string;
+  shipping_method: string;
+  insurance: boolean;
+  signature_required: boolean;
+  estimated_delivery_date: Date;
+  shipping_cost: number;
+  special_instructions?: string;
+  status: "pending" | "in_transit" | "delivered" | "cancelled";
+  created_at?: Date;
+  updated_at?: Date;
+}

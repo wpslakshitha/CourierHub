@@ -1,0 +1,62 @@
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+// Hash password
+export const hashPassword = async (password) => {
+    const saltRounds = 10;
+    return await bcrypt.hash(password, saltRounds);
+};
+// Compare password with hashed password
+export const comparePassword = async (password, hashedPassword) => {
+    return await bcrypt.compare(password, hashedPassword);
+};
+// Generate JWT token
+export const generateToken = (payload) => {
+    const secret = process.env.JWT_SECRET || "your-secret-key";
+    return jwt.sign(payload, secret, { expiresIn: "24h" });
+};
+// Verify token
+export const verifyToken = (token) => {
+    try {
+        const secret = process.env.JWT_SECRET || "your-secret-key";
+        return jwt.verify(token, secret);
+    }
+    catch (error) {
+        return null;
+    }
+};
+// Auth middleware
+export const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            error: "Unauthorized: No token provided",
+        });
+    }
+    const user = verifyToken(token);
+    if (!user) {
+        return res.status(403).json({
+            success: false,
+            error: "Forbidden: Invalid token",
+        });
+    }
+    req.user = user;
+    next();
+};
+// Admin authorization middleware
+export const authorizeAdmin = (req, res, next) => {
+    if (!req.user) {
+        return res.status(401).json({
+            success: false,
+            error: "Unauthorized: No token provided",
+        });
+    }
+    if (req.user.role !== "admin") {
+        return res.status(403).json({
+            success: false,
+            error: "Forbidden: Admin privileges required",
+        });
+    }
+    next();
+};
