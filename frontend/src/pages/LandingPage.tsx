@@ -23,8 +23,10 @@ import type { Shipment } from "@/types/types";
 import { toast } from "sonner";
 import ShippingCalculator from "../components/client/ShippingCalculator";
 import { Badge } from "../components/ui/badge";
+import { useAuth } from "../components/context/AuthContext";
 
 const LandingPage = () => {
+  const { user } = useAuth();
   const [trackingNumber, setTrackingNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [trackingInfo, setTrackingInfo] = useState<Shipment | null>(null);
@@ -157,20 +159,37 @@ const LandingPage = () => {
                   transform: "translateY(20px)",
                 }}
               >
-                <a
-                  href="#get-started"
-                  className="group inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transform hover:-translate-y-1 hover:scale-105"
-                  style={{
-                    backgroundSize: "200% 100%",
-                    animation: "gradientShift 3s ease infinite",
-                  }}
-                >
-                  Get Started
-                  <ArrowRight
-                    className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"
-                    strokeWidth={2}
-                  />
-                </a>
+                {user ? (
+                  <Link
+                    to="/dashboard"
+                    className="group inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transform hover:-translate-y-1 hover:scale-105"
+                    style={{
+                      backgroundSize: "200% 100%",
+                      animation: "gradientShift 3s ease infinite",
+                    }}
+                  >
+                    View Shipments
+                    <ArrowRight
+                      className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"
+                      strokeWidth={2}
+                    />
+                  </Link>
+                ) : (
+                  <a
+                    href="#get-started"
+                    className="group inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transform hover:-translate-y-1 hover:scale-105"
+                    style={{
+                      backgroundSize: "200% 100%",
+                      animation: "gradientShift 3s ease infinite",
+                    }}
+                  >
+                    Get Started
+                    <ArrowRight
+                      className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"
+                      strokeWidth={2}
+                    />
+                  </a>
+                )}
                 <a
                   href="#learn-more"
                   className="group inline-flex items-center px-6 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 text-gray-800 dark:text-gray-200 font-medium rounded-lg transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-1 hover:scale-105"

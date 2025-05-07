@@ -5,12 +5,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useState, useEffect } from "react";
-
-// Pages
 import Login from "./pages/auth/Login";
 import LandingPage from "./pages/LandingPage";
-
-// Components
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import ProtectedRoute from "./components/auth/ProtectedRoute.tsx";
