@@ -16,8 +16,19 @@ import {
   Phone,
   FileText,
   Clock,
+  LetterText,
+  TestTube,
+  PanelLeft,
+  Package2,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 interface FormData {
   id?: number; // Optional for new records (auto-generated)
@@ -78,11 +89,12 @@ const CreateShipment = () => {
   const [estimatedDelivery, setEstimatedDelivery] = useState<Date>();
   const [estimatedCost, setEstimatedCost] = useState<number | null>(null);
 
+  console.log(estimatedCost, 999);
+
   const [formData, setFormData] = useState<FormData>({
     tracking_number: "",
-    shipping_cost: estimatedCost || 0,
+    shipping_cost: 0,
     status: "pending",
-    // Sender information (from user profile)
     user_id: user?.user_id || 0,
     sender_name: user?.name || "",
     sender_email: user?.email || "",
@@ -131,8 +143,21 @@ const CreateShipment = () => {
     name: "",
     email: "",
     phone: "",
+    address: "",
+    city: "",
+    state: "",
+    zip: "",
+    country: "Sri Lanka",
   });
 
+  useEffect(() => {
+    if (estimatedCost !== null) {
+      setFormData((prev) => ({
+        ...prev,
+        shipping_cost: estimatedCost,
+      }));
+    }
+  }, [estimatedCost]);
   // Fetch user profile data
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -143,6 +168,11 @@ const CreateShipment = () => {
           name: user.name,
           email: user.email,
           phone: user.phone,
+          address: user.address,
+          city: user.city,
+          state: user.state,
+          zip: user.zip,
+          country: user.country,
         });
       } catch (error) {
         console.error("Error fetching user profile:", error);
@@ -174,9 +204,6 @@ const CreateShipment = () => {
   ]);
 
   const calculateShippingEstimate = () => {
-    // This would be replaced with an actual API call to calculate shipping
-    // For demonstration, we'll use mock data
-
     const baseRate = 10;
     const weight = parseFloat(formData.weight.toString()) || 0;
 
@@ -193,7 +220,9 @@ const CreateShipment = () => {
     }
 
     const cost = baseRate + weight * 2 * methodMultiplier;
-    setEstimatedCost(parseFloat(cost.toFixed(2)));
+    console.log(cost, 111111111111);
+
+    setEstimatedCost(cost);
 
     // Calculate estimated delivery date
     const today = new Date();
@@ -291,7 +320,12 @@ const CreateShipment = () => {
 
   const handleNextStep = () => {
     if (validateForm()) {
-      setStep((prev) => prev + 1);
+      if (step === 3) {
+        // On step 3 (shipping options), just advance to review
+        setStep((prev) => prev + 1);
+      } else {
+        setStep((prev) => prev + 1);
+      }
       window.scrollTo(0, 0);
     }
   };
@@ -300,9 +334,11 @@ const CreateShipment = () => {
     setStep((prev) => prev - 1);
     window.scrollTo(0, 0);
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Only proceed if we're on the final step
+    if (step !== 4) return;
 
     try {
       setIsLoading(true);
@@ -326,6 +362,8 @@ const CreateShipment = () => {
       navigate(`/tracking/${data.tracking_number}`);
     } catch (error) {
       console.error("Error creating shipment:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -558,28 +596,36 @@ const CreateShipment = () => {
               <div>
                 <label
                   htmlFor="recipient_country"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 pb-1"
                 >
                   Country*
                 </label>
-                <div className="mt-1 relative rounded-md shadow-sm">
-                  <select
-                    id="recipient_country"
-                    name="recipient_country"
-                    value={formData.recipient_country}
-                    onChange={handleChange}
-                    className="block w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-                  >
-                    <option value="United States">United States</option>
-                    <option value="Canada">Canada</option>
-                    <option value="Mexico">Mexico</option>
-                    <option value="United Kingdom">United Kingdom</option>
-                    <option value="Australia">Australia</option>
-                    <option value="Germany">Germany</option>
-                    <option value="France">France</option>
-                    <option value="Japan">Japan</option>
-                  </select>
-                </div>
+                <Select
+                  value={formData.recipient_country}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      recipient_country: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="w-full" size="sm">
+                    <SelectValue placeholder="Select country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Sri Lanka">Sri Lanka</SelectItem>
+                    <SelectItem value="United States">United States</SelectItem>
+                    <SelectItem value="Canada">Canada</SelectItem>
+                    <SelectItem value="Mexico">Mexico</SelectItem>
+                    <SelectItem value="United Kingdom">
+                      United Kingdom
+                    </SelectItem>
+                    <SelectItem value="Australia">Australia</SelectItem>
+                    <SelectItem value="Germany">Germany</SelectItem>
+                    <SelectItem value="France">France</SelectItem>
+                    <SelectItem value="Japan">Japan</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </motion.div>
@@ -601,28 +647,52 @@ const CreateShipment = () => {
               <div>
                 <label
                   htmlFor="package_type"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 pb-1"
                 >
                   Package Type*
                 </label>
-                <div className="mt-1 relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Package className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <select
-                    id="package_type"
-                    name="package_type"
-                    value={formData.package_type}
-                    onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-                  >
-                    <option value="box">Box</option>
-                    <option value="envelope">Envelope</option>
-                    <option value="tube">Tube</option>
-                    <option value="pallet">Pallet</option>
-                    <option value="custom">Custom Package</option>
-                  </select>
-                </div>
+                <Select
+                  value={formData.package_type}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, package_type: value }))
+                  }
+                >
+                  <SelectTrigger className="w-full" size="sm">
+                    <SelectValue placeholder="Select package type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="box">
+                      <div className="flex items-center gap-2">
+                        <Package className="h-4 w-4" />
+                        Box
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="envelope">
+                      <div className="flex items-center gap-2">
+                        <LetterText className="h-4 w-4" />
+                        Envelope
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="tube">
+                      <div className="flex items-center gap-2">
+                        <TestTube className="h-4 w-4" />
+                        Tube
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="pallet">
+                      <div className="flex items-center gap-2">
+                        <PanelLeft className="h-4 w-4" />
+                        Pallet
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="custom">
+                      <div className="flex items-center gap-2">
+                        <Package2 className="h-4 w-4" />
+                        Custom Package
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
@@ -835,7 +905,7 @@ const CreateShipment = () => {
                     onClick={() =>
                       setFormData((prev) => ({
                         ...prev,
-                        shippingMethod: "standard",
+                        shipping_method: "standard",
                       }))
                     }
                   >
@@ -858,7 +928,7 @@ const CreateShipment = () => {
                     onClick={() =>
                       setFormData((prev) => ({
                         ...prev,
-                        shippingMethod: "priority",
+                        shipping_method: "priority",
                       }))
                     }
                   >
@@ -881,7 +951,7 @@ const CreateShipment = () => {
                     onClick={() =>
                       setFormData((prev) => ({
                         ...prev,
-                        shippingMethod: "express",
+                        shipping_method: "express",
                       }))
                     }
                   >
@@ -950,7 +1020,12 @@ const CreateShipment = () => {
                         Estimated Delivery:
                       </p>
                       <p className="text-md font-medium text-blue-700">
-                        {estimatedDelivery?.toString()}
+                        {estimatedDelivery?.toLocaleDateString("en-US", {
+                          weekday: "short",
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
                       </p>
                     </div>
                   </div>
@@ -992,11 +1067,11 @@ const CreateShipment = () => {
                   </div>
                   <div className="md:col-span-2">
                     <p className="text-sm text-gray-600">Address:</p>
-                    {/* <p className="text-md">
+                    <p className="text-md">
                       {senderInfo.address}, {senderInfo.city},{" "}
                       {senderInfo.state} {senderInfo.zip}
                     </p>
-                    <p className="text-md">{senderInfo.country}</p> */}
+                    <p className="text-md">{senderInfo.country}</p>
                   </div>
                 </div>
               </div>
@@ -1130,7 +1205,12 @@ const CreateShipment = () => {
                         Estimated Delivery:
                       </p>
                       <p className="text-md font-medium text-blue-700">
-                        {estimatedDelivery?.toString()}
+                        {estimatedDelivery?.toLocaleDateString("en-US", {
+                          weekday: "short",
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
                       </p>
                     </div>
                   </div>
@@ -1258,7 +1338,9 @@ const CreateShipment = () => {
           </div>
 
           {/* Form Content */}
-          <form onSubmit={handleSubmit}>
+
+          <form onSubmit={(e) => e.preventDefault()}>
+            {" "}
             <div className="px-6 py-6">
               {/* Success/Error Messages */}
               {success && (
@@ -1281,7 +1363,6 @@ const CreateShipment = () => {
               {/* Form Steps */}
               {renderFormStep()}
             </div>
-
             {/* Form Actions */}
             <div className="px-6 py-4 bg-gray-50 flex justify-between">
               {step > 1 ? (
@@ -1307,7 +1388,8 @@ const CreateShipment = () => {
                 </button>
               ) : (
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleSubmit}
                   disabled={isLoading || success !== ""}
                   className={`inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
                     (isLoading || success !== "") &&

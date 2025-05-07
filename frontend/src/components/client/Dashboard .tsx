@@ -80,6 +80,9 @@ const Dashboard = () => {
   const [sortBy, setSortBy] = useState<string>("date_desc");
   const [expandedShipment, setExpandedShipment] = useState<string | null>(null);
 
+  console.log(filteredShipments, 555);
+  console.log(shipments, 888);
+
   // Fetch shipments data
   useEffect(() => {
     const fetchShipments = async (userId: number) => {

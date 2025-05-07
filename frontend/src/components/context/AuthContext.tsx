@@ -12,6 +12,11 @@ type User = {
   email: string;
   phone: string;
   role: "client" | "admin";
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
 };
 
 type AuthContextType = {
