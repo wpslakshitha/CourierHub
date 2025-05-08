@@ -119,21 +119,3 @@ Your Name - wpslakshitha@gmail.com
 
 Project Link: https://github.com/wpslakshitha/CourierHub
 
-```plaintext
-This README includes:
-1. Project overview
-2. Key features
-3. Technology stack
-4. Installation instructions
-5. Project structure
-6. Contribution guidelines
-7. License information
-8. Contact details
-
-You can customize it further by:
-- Adding actual screenshots
-- Including detailed API documentation
-- Adding deployment instructions
-- Expanding the features list
-- Adding acknowledgments
-```
